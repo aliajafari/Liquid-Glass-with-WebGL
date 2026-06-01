@@ -2,6 +2,8 @@
 
 A lightweight, modular library for **liquid glass** effects on HTML elements. The page background is captured with `html2canvas`, the region under the glass is cropped, and **WebGL2** processes it with GLSL shaders — blur, lens distortion, zoom, chromatic aberration, frost, and a CSS fallback when GPU capture is unavailable.
 
+![Liquid Glass effect demo](assets/glass.gif)
+
 ---
 
 ## ✨ Introduction

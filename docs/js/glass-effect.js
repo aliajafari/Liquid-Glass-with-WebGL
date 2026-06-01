@@ -2,8 +2,12 @@ import { createEffectConfig } from "./utils/config.js";
 import { createPerformanceMonitor } from "./utils/performance.js";
 import { captureElement, isCanvasSafe } from "./utils/dom-capture.js";
 
-const vertexShaderSource = await fetch("./shaders/vertex.glsl").then((r) => r.text());
-const fragmentShaderSource = await fetch("./shaders/fragment.glsl").then((r) => r.text());
+const vertexShaderSource = await fetch(
+  new URL("./shaders/vertex.glsl", import.meta.url)
+).then((r) => r.text());
+const fragmentShaderSource = await fetch(
+  new URL("./shaders/fragment.glsl", import.meta.url)
+).then((r) => r.text());
 
 export function createLiquidGlass(options) {
   const container = document.querySelector(options.container);

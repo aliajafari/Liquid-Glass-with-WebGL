@@ -1,0 +1,152 @@
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  display: grid;
+  place-items: center;
+}
+
+.container {
+  position: relative;
+  width: 900px;
+  height: 520px;
+  overflow: hidden;
+  border-radius: 32px;
+  background: #111827;
+}
+
+.bg-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.15);
+}
+
+.big-text {
+  position: absolute;
+  top: 55px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 76px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.3);
+  white-space: nowrap;
+}
+
+.cards {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.card {
+  width: 220px;
+  height: 180px;
+  border-radius: 28px;
+  display: grid;
+  place-items: center;
+  font-size: 34px;
+  font-weight: 900;
+  color: white;
+  background: rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.32);
+}
+
+.glass {
+  position: absolute;
+  left: 32%;
+  top: 22%;
+  width: 36%;
+  height: 58%;
+  border-radius: 36px;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.glass-canvas,
+.glass-fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.glass-canvas {
+  z-index: 1;
+}
+
+.glass-fallback {
+  display: none;
+  z-index: 0;
+  backdrop-filter: blur(20px) saturate(145%) contrast(1.08);
+  -webkit-backdrop-filter: blur(20px) saturate(145%) contrast(1.08);
+  background: linear-gradient(135deg, rgba(255,255,255,0.24), rgba(255,255,255,0.08));
+  border: 1px solid rgba(255,255,255,0.35);
+}
+
+.glass-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  padding: 28px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+}
+
+.glass-content h2 {
+  margin: 0;
+  font-size: 32px;
+}
+
+.glass-content p {
+  margin: 0;
+  line-height: 1.6;
+  opacity: 0.85;
+}
+
+.glass-content button {
+  width: fit-content;
+  padding: 10px 18px;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 14px;
+  color: white;
+  background: rgba(255,255,255,0.16);
+  cursor: pointer;
+}
+
+.performance-box {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 20;
+  min-width: 220px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(0,0,0,0.45);
+  border: 1px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(12px);
+  color: white;
+  font-size: 13px;
+  line-height: 1.8;
+}

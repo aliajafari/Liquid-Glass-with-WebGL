@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Liquid Glass with WebGL</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="container" id="container">
+    <img class="bg-image" src="./background.jpg" crossorigin="anonymous" alt="" />
+    <div class="bg-overlay"></div>
+
+    <div class="big-text">LIQUID GLASS</div>
+
+    <div class="cards">
+      <div class="card">React</div>
+      <div class="card">WebGL</div>
+      <div class="card">Shader</div>
+    </div>
+
+    <div class="glass" id="glass" data-html2canvas-ignore="true">
+      <canvas class="glass-canvas" id="glassCanvas"></canvas>
+      <div class="glass-fallback" id="glassFallback"></div>
+
+      <div class="glass-content">
+        <h2>Glass Card</h2>
+        <p>Real HTML content inside a WebGL-powered glass div.</p>
+        <button>Action</button>
+      </div>
+    </div>
+
+    <div class="performance-box" id="performanceBox" data-html2canvas-ignore="true">
+      <strong>Performance</strong>
+      <div>Mode: <span id="modeValue">WebGL</span></div>
+      <div>FPS: <span id="fpsValue">0</span></div>
+      <div>Frame: <span id="frameValue">0</span>ms</div>
+      <div>Snapshot: <span id="snapshotValue">0</span>ms</div>
+      <div>Texture Upload: <span id="uploadValue">0</span>ms</div>
+      <div>DPR: <span id="dprValue">1</span></div>
+      <div>Resolution: <span id="resolutionValue">0x0</span></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script type="module">
+    import { createLiquidGlass } from "../src/glass-effect.js";
+
+    createLiquidGlass({
+      container: "#container",
+      glass: "#glass",
+      canvas: "#glassCanvas",
+      fallback: "#glassFallback",
+      performanceBox: {
+        mode: "#modeValue",
+        fps: "#fpsValue",
+        frame: "#frameValue",
+        snapshot: "#snapshotValue",
+        upload: "#uploadValue",
+        dpr: "#dprValue",
+        resolution: "#resolutionValue"
+      },
+      effect: {
+        radius: 45,
+        blur: 10,
+        distortion: 30,
+        zoom: 35,
+        chromaticAberration: 20,
+        frost: 8,
+        frostScale: 50,
+        light: 30,
+        edgeGlow: 40,
+        edgeWidth: 25,
+        tint: 94,
+        alpha: 97
+      },
+      performance: {
+        maxDpr: 1.25,
+        targetFps: 60,
+        animateGlass: true
+      }
+    });
+  </script>
+</body>
+</html>

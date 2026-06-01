@@ -194,7 +194,3 @@ The CSS fallback does **not** support:
 ## 📜 Licence
 
 This project is released under the **[MIT License](LICENSE)**.
-
-**Copyright © 2026 Ali A. Jafari**
-
-You may use, copy, modify, merge, publish, distribute, sublicense, and sell copies of the software. The software is provided **“AS IS”**, without warranty of any kind.

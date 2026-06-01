@@ -12,7 +12,7 @@ Use `createLiquidGlass()` to add a glass layer over your DOM: HTML inside `glass
 
 ## Live Demo
 
-https://aajafari87.github.io/liquid-glass-webgl/
+https://aliajafari.github.io/Liquid-Glass-with-WebGL/
 
 **How it works:**
 

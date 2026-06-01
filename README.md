@@ -10,6 +10,10 @@ A lightweight, modular library for **liquid glass** effects on HTML elements. Th
 
 Use `createLiquidGlass()` to add a glass layer over your DOM: HTML inside `glass` renders normally, while the frosted/transparent background in that area is simulated via canvas and shaders.
 
+## Live Demo
+
+https://aajafari87.github.io/liquid-glass-webgl/
+
 **How it works:**
 
 1. 📸 Snapshot the `container` with `html2canvas`
@@ -55,7 +59,7 @@ Shaders are loaded with `fetch`, so a local server is required — see [Local fi
 
 ```
 glass-effect/
-├── demo/                    # 🖥️  Sample page and styles
+├── docs/                    # 🖥️  Sample page and styles
 │   ├── index.html
 │   └── styles.css
 ├── src/
@@ -181,6 +185,8 @@ The CSS fallback does **not** support:
 - Zoom
 - Chromatic aberration
 - Frost effect
+
+
 
 ### 📦 Other constraints
 

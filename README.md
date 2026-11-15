@@ -39,6 +39,27 @@ https://aliajafari.github.io/Liquid-Glass-with-WebGL/
 
 ---
 
+## ⚛️ React package
+
+The effect is also available as React components on npm: [`@aliajafari/react-liquid-glass`](packages/react-liquid-glass).
+
+```bash
+npm install @aliajafari/react-liquid-glass
+```
+
+```tsx
+import { LiquidGlassContainer, GlassCard } from "@aliajafari/react-liquid-glass";
+
+<LiquidGlassContainer>
+  <img src="/background.jpg" alt="" />
+  <GlassCard blur={20}>Hello</GlassCard>
+</LiquidGlassContainer>
+```
+
+See the [package README](packages/react-liquid-glass/README.md) for all components and props.
+
+---
+
 ## 🌐 Demo
 
 Run locally from the project root:

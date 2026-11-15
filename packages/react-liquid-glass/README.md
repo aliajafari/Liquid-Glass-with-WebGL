@@ -23,25 +23,47 @@ bun add react-webgl-liquid-glass
 
 ## Quick start
 
+Use the components like any other element. Put them in a div, a grid or a flex row, or make them `sticky` or `fixed`. The glass refracts whatever the page draws behind it and follows the element as the page scrolls, resizes or reflows.
+
 ```tsx
-import { LiquidGlassContainer, GlassCard, GlassButton } from "react-webgl-liquid-glass";
+import { GlassCard, GlassButton, LiquidGlass } from "react-webgl-liquid-glass";
 
-export function Hero() {
+export function Page() {
   return (
-    <LiquidGlassContainer style={{ height: 500 }}>
-      <img src="/background.jpg" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+    <>
+      {/* Sticky navigation bar */}
+      <LiquidGlass as="nav" radius={100} style={{ position: "sticky", top: 16 }}>
+        <a href="/">Home</a> <a href="/docs">Docs</a>
+      </LiquidGlass>
 
-      <GlassCard blur={20} distortion={40} style={{ position: "absolute", top: 80, left: 80, width: 320 }}>
-        <h2>Glass Card</h2>
-        <p>Anything behind this card is refracted.</p>
-        <GlassButton onClick={() => alert("hi")}>Action</GlassButton>
-      </GlassCard>
-    </LiquidGlassContainer>
+      <section className="hero">
+        {/* Card in normal layout */}
+        <GlassCard blur={20} style={{ maxWidth: 480 }}>
+          <h2>Glass Card</h2>
+          <p>Anything behind this card is refracted.</p>
+          <GlassButton>Action</GlassButton>
+        </GlassCard>
+      </section>
+
+      {/* Fixed floating button */}
+      <GlassButton style={{ position: "fixed", right: 24, bottom: 24 }}>↑</GlassButton>
+    </>
   );
 }
 ```
 
-`<LiquidGlassContainer>` is the backdrop. Everything rendered inside it (except the glass elements themselves) is captured and bent by the glass. Without a container, a glass element uses its parent element as the backdrop.
+By default the backdrop is the whole page (`document.body`). It's captured once and shared by every glass element, and glass elements are left out of the capture without changing the layout.
+
+### Scoping the backdrop
+
+To capture only one area, which is faster on large pages, wrap it in `<LiquidGlassContainer>`. Glass inside it refracts only what's inside the container.
+
+```tsx
+<LiquidGlassContainer style={{ height: 500 }}>
+  <img src="/background.jpg" alt="" className="cover" />
+  <GlassCard blur={20}>Hello</GlassCard>
+</LiquidGlassContainer>
+```
 
 ## Components
 
@@ -79,7 +101,7 @@ Effect props can change at any time; they update the shader without re-capturing
 
 | Prop | Default | Description |
 |------|---------|-------------|
-| `container` | nearest container, else parent | Element to capture: a ref, an element or a CSS selector. |
+| `container` | nearest `<LiquidGlassContainer>`, else the page | Element to capture: a ref, an element or a CSS selector. |
 | `autoRefresh` | `false` | Re-capture the background when the DOM inside the container changes. |
 | `maxDpr` | `1.25` | Cap on device pixel ratio (limits GPU cost). |
 | `targetFps` | `30` | Maximum render rate. |
@@ -94,7 +116,7 @@ All other props (`className`, `style`, event handlers, `aria-*`, `data-*`) go to
 
 ## Refreshing the background
 
-The background is captured once, then again when the container is resized. Moving the glass only re-crops the existing capture, so dragging is cheap. When the content behind the glass changes, either pass `autoRefresh` or call `refresh()` through a ref:
+The background is captured once, then again when the container (by default the page) changes size. Scrolling, sticky and fixed positioning, and animating the glass only re-crop the existing capture, which is cheap. An element that scrolls inside the container (`overflow: auto`) triggers a new capture shortly after it stops scrolling. When the content behind the glass changes, either pass `autoRefresh` or call `refresh()` through a ref:
 
 ```tsx
 const glass = useRef<LiquidGlassHandle>(null);
@@ -153,12 +175,18 @@ The package's entry is marked `"use client"`, so you can import the components s
   ```tsx
   import html2canvas from "html2canvas-pro";
 
-  const capture = (el, { scale, ignoreElements }) =>
-    html2canvas(el, { backgroundColor: null, scale, useCORS: true, ignoreElements });
+  const capture = (el, { scale, onclone }) =>
+    html2canvas(el, { backgroundColor: null, scale, useCORS: true, onclone });
 
-  <LiquidGlassContainer defaults={{ capture }}>…</LiquidGlassContainer>
+  <GlassCard capture={capture}>…</GlassCard>
+  // or share it: <LiquidGlassContainer defaults={{ capture }}>…</LiquidGlassContainer>
   ```
+
+  Always forward `onclone`: it hides the glass elements in the capture without moving the rest of the page.
 - **Video, iframes and canvas animations** behind the glass are captured as a still image.
+- **Other fixed or sticky elements** that aren't glass are captured where they were at capture time. Add `data-liquid-glass-ignore` to them so they don't show up inside the glass at the wrong spot.
+- **Unsupported CSS.** The capture can only show what `html2canvas` can draw. For example, `repeating-linear-gradient` and `backdrop-filter` don't appear.
+- **Very tall pages** are captured at a lower resolution, to stay under the browser's canvas size limit (about 16 million pixels).
 - **Cost.** Capturing a large DOM can take tens to hundreds of milliseconds, and heavy blur on large glass surfaces is expensive on low-end GPUs. Lower `maxDpr`, `targetFps` or `blur` if needed.
 - The CSS fallback doesn't support distortion, zoom, chromatic aberration or frost.
 

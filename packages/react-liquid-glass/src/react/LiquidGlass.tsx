@@ -29,7 +29,8 @@ export type ContainerTarget = RefObject<HTMLElement | null> | HTMLElement | stri
 export interface LiquidGlassOptions extends LiquidGlassEffect, LiquidGlassPerformance {
   /**
    * Element to capture as the background. Defaults to the nearest
-   * `<LiquidGlassContainer>`, then to the glass element's parent.
+   * `<LiquidGlassContainer>`, otherwise the whole page (`document.body`), so the glass
+   * can sit anywhere: in normal layout, `position: sticky` or `position: fixed`.
    */
   container?: ContainerTarget;
   /** Custom capture function, e.g. one built on `html2canvas-pro`. */
@@ -136,7 +137,7 @@ export function useLiquidGlass(options: LiquidGlassOptions = {}): UseLiquidGlass
       return;
     }
 
-    const container = resolveContainer(containerTarget, contextContainer ?? glass.parentElement);
+    const container = resolveContainer(containerTarget, contextContainer ?? document.body);
     if (!container) {
       setMode("fallback");
       setReason("Container not found");

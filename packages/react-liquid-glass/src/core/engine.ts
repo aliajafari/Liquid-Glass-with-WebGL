@@ -1,26 +1,9 @@
 import { createEffectConfig, type LiquidGlassEffect, type ResolvedEffectConfig } from "./config";
 import { fragmentShaderSource, vertexShaderSource } from "./shaders";
+import { getSnapshotStore, GLASS_ATTRIBUTE, type CaptureFunction, type Snapshot } from "./snapshot";
 
-/** Attribute set on every glass element; such elements are never captured. */
-export const GLASS_ATTRIBUTE = "data-liquid-glass";
-/** Add this attribute to any element that should be left out of the background capture. */
-export const IGNORE_ATTRIBUTE = "data-liquid-glass-ignore";
-
-export interface CaptureOptions {
-  /** Pixel ratio to render the snapshot at. */
-  scale: number;
-  /** Returns true for elements that must not appear in the snapshot. */
-  ignoreElements: (element: Element) => boolean;
-}
-
-/**
- * Renders `element` to a canvas. Defaults to `html2canvas`; pass your own to use
- * a fork such as `html2canvas-pro` (needed for modern CSS colors like `oklch()`).
- */
-export type CaptureFunction = (
-  element: HTMLElement,
-  options: CaptureOptions
-) => Promise<HTMLCanvasElement>;
+export { GLASS_ATTRIBUTE, IGNORE_ATTRIBUTE } from "./snapshot";
+export type { CaptureFunction, CaptureOptions } from "./snapshot";
 
 /** `pending` until the first WebGL frame is drawn, `fallback` when the CSS fallback is used. */
 export type LiquidGlassMode = "pending" | "webgl" | "fallback";
@@ -72,46 +55,6 @@ export interface LiquidGlassEngine {
   destroy(): void;
 }
 
-const IMAGE_TIMEOUT_MS = 3000;
-const AUTO_REFRESH_DEBOUNCE_MS = 150;
-
-function waitForImages(root: HTMLElement): Promise<void> {
-  const images = Array.from(root.querySelectorAll("img"));
-
-  return Promise.all(
-    images.map((img) => {
-      if (img.complete) return undefined;
-
-      return new Promise<void>((resolve) => {
-        const done = (): void => {
-          clearTimeout(timer);
-          img.removeEventListener("load", done);
-          img.removeEventListener("error", done);
-          resolve();
-        };
-        const timer = setTimeout(done, IMAGE_TIMEOUT_MS);
-        img.addEventListener("load", done);
-        img.addEventListener("error", done);
-      });
-    })
-  ).then(() => undefined);
-}
-
-async function loadDefaultCapture(): Promise<CaptureFunction> {
-  const mod = await import("html2canvas");
-  const html2canvas = (mod as { default?: typeof mod.default }).default ?? (mod as unknown as typeof mod.default);
-
-  return (element, { scale, ignoreElements }) =>
-    html2canvas(element, {
-      backgroundColor: null,
-      scale,
-      useCORS: true,
-      allowTaint: false,
-      logging: false,
-      ignoreElements
-    });
-}
-
 function isCanvasSafe(ctx: CanvasRenderingContext2D): boolean {
   try {
     ctx.getImageData(0, 0, 1, 1);
@@ -119,10 +62,6 @@ function isCanvasSafe(ctx: CanvasRenderingContext2D): boolean {
   } catch {
     return false;
   }
-}
-
-function isHtml2CanvasFrame(node: Node): boolean {
-  return node.nodeName === "IFRAME" && (node as HTMLElement).classList.contains("html2canvas-container");
 }
 
 /**
@@ -140,9 +79,8 @@ export function createLiquidGlassEngine(options: LiquidGlassEngineOptions): Liqu
   let dpr = 1;
 
   let rafId = 0;
-  let autoRefreshTimer: ReturnType<typeof setTimeout> | undefined;
   let resizeObserver: ResizeObserver | undefined;
-  let mutationObserver: MutationObserver | undefined;
+  const store = getSnapshotStore(container);
 
   const cleanups: Array<() => void> = [];
 
@@ -150,8 +88,6 @@ export function createLiquidGlassEngine(options: LiquidGlassEngineOptions): Liqu
     if (rafId) cancelAnimationFrame(rafId);
     rafId = 0;
     resizeObserver?.disconnect();
-    mutationObserver?.disconnect();
-    clearTimeout(autoRefreshTimer);
     for (const cleanup of cleanups.splice(0)) cleanup();
   }
 
@@ -169,7 +105,7 @@ export function createLiquidGlassEngine(options: LiquidGlassEngineOptions): Liqu
   }
 
   const api: LiquidGlassEngine = {
-    refresh: () => captureContainer(),
+    refresh: () => captureContainer(true),
     setEffect(next) {
       effect = createEffectConfig(next);
       dirty = true;
@@ -194,6 +130,9 @@ export function createLiquidGlassEngine(options: LiquidGlassEngineOptions): Liqu
       }
     }
   };
+
+  // Marks the element so every capture hides it (see SnapshotStore.onclone).
+  glass.setAttribute(GLASS_ATTRIBUTE, "");
 
   if (getComputedStyle(glass).position === "static") {
     glass.style.position = "relative";
@@ -287,23 +226,16 @@ export function createLiquidGlassEngine(options: LiquidGlassEngineOptions): Liqu
   const cropCanvas = document.createElement("canvas");
   const cropCtx = cropCanvas.getContext("2d", { willReadFrequently: true });
 
-  let captureFn: CaptureFunction | undefined = options.capture;
-  let snapshot: HTMLCanvasElement | null = null;
+  let snapshot: Snapshot | null = null;
   let hasTexture = false;
-  let capturing: Promise<void> | null = null;
-  let captureQueued = false;
   let lastRect = "";
   let lastContainerSize = "";
   let needsResize = true;
 
-  let snapshotTime = 0;
   let uploadTime = 0;
   let lastRenderTime = 0;
   let frameCount = 0;
   let fpsTimer = performance.now();
-
-  const ignoreElements = (el: Element): boolean =>
-    el === glass || el.hasAttribute(GLASS_ATTRIBUTE) || el.hasAttribute(IGNORE_ATTRIBUTE);
 
   function currentDpr(): number {
     return Math.min(window.devicePixelRatio || 1, maxDpr);
@@ -321,64 +253,35 @@ export function createLiquidGlassEngine(options: LiquidGlassEngineOptions): Liqu
     dirty = true;
   }
 
-  function captureContainer(): Promise<void> {
+  function captureContainer(queue = true): Promise<void> {
     if (destroyed || mode === "fallback") return Promise.resolve();
-    if (capturing) {
-      captureQueued = true;
-      return capturing;
-    }
-
-    capturing = (async () => {
-      try {
-        if (!captureFn) captureFn = await loadDefaultCapture();
-      } catch (error) {
-        console.error(error);
-        fail("html2canvas unavailable");
-        return;
-      }
-
-      do {
-        captureQueued = false;
-        const start = performance.now();
-        try {
-          await waitForImages(container);
-          if (destroyed) return;
-          const result = await captureFn(container, { scale: dpr, ignoreElements });
-          if (destroyed) return;
-          snapshot = result;
-          snapshotTime = performance.now() - start;
-          lastRect = "";
-        } catch (error) {
-          console.error(error);
-          fail("Capture failed");
-          return;
-        }
-      } while (captureQueued && !destroyed);
-    })().finally(() => {
-      capturing = null;
-    });
-
-    return capturing;
+    return store.capture({ captureFn: options.capture, maxScale: dpr, queue });
   }
 
   function updateTexture(): void {
     if (!snapshot || !cropCtx) return;
 
+    // Where the glass sits on the snapshot. Reading both rects every frame makes this
+    // follow normal layout, sticky and fixed positioning, scrolling and animations.
     const glassRect = glass.getBoundingClientRect();
-    const key = `${glassRect.left},${glassRect.top},${glassRect.width},${glassRect.height}`;
+    const origin = store.origin();
+    const x = glassRect.left - origin.left;
+    const y = glassRect.top - origin.top;
+    const key = `${x},${y},${glassRect.width},${glassRect.height},${canvas.width}`;
     if (key === lastRect) return;
     lastRect = key;
+    if (glassRect.width === 0 || glassRect.height === 0) return;
 
     const start = performance.now();
-    const containerRect = container.getBoundingClientRect();
+    const s = snapshot.scale;
 
     cropCtx.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
     cropCtx.drawImage(
-      snapshot,
-      (glassRect.left - containerRect.left) * dpr,
-      (glassRect.top - containerRect.top) * dpr,
-      glassRect.width * dpr,
-      glassRect.height * dpr,
+      snapshot.canvas,
+      x * s,
+      y * s,
+      glassRect.width * s,
+      glassRect.height * s,
       0,
       0,
       cropCanvas.width,
@@ -462,7 +365,7 @@ export function createLiquidGlassEngine(options: LiquidGlassEngineOptions): Liqu
       options.onStats({
         fps: Math.round((frameCount * 1000) / elapsed),
         frameTime: performance.now() - frameStart,
-        snapshotTime,
+        snapshotTime: snapshot?.duration ?? 0,
         uploadTime,
         dpr,
         width: canvas.width,
@@ -501,28 +404,21 @@ export function createLiquidGlassEngine(options: LiquidGlassEngineOptions): Liqu
   window.addEventListener("resize", onWindowResize);
   cleanups.push(() => window.removeEventListener("resize", onWindowResize));
 
-  if (options.autoRefresh && typeof MutationObserver !== "undefined") {
-    mutationObserver = new MutationObserver((records) => {
-      const relevant = records.some((record) => {
-        const target = record.target instanceof Element ? record.target : record.target.parentElement;
-        if (target && (glass.contains(target) || target.closest(`[${GLASS_ATTRIBUTE}]`))) return false;
-        if (record.type === "childList") {
-          const nodes = [...Array.from(record.addedNodes), ...Array.from(record.removedNodes)];
-          if (nodes.length > 0 && nodes.every(isHtml2CanvasFrame)) return false;
-        }
-        return true;
-      });
-      if (!relevant) return;
-      clearTimeout(autoRefreshTimer);
-      autoRefreshTimer = setTimeout(() => void captureContainer(), AUTO_REFRESH_DEBOUNCE_MS);
-    });
-    mutationObserver.observe(container, {
-      subtree: true,
-      childList: true,
-      attributes: true,
-      characterData: true
-    });
-  }
+  cleanups.push(
+    store.subscribe({
+      glass,
+      onSnapshot(next) {
+        snapshot = next;
+        lastRect = "";
+      },
+      onError(error) {
+        console.error(error);
+        fail(error instanceof Error && /html2canvas/i.test(error.message) ? "html2canvas unavailable" : "Capture failed");
+      }
+    })
+  );
+
+  if (options.autoRefresh) cleanups.push(store.enableAutoRefresh());
 
   syncCanvasSize();
   needsResize = false;
@@ -530,7 +426,8 @@ export function createLiquidGlassEngine(options: LiquidGlassEngineOptions): Liqu
     const r = container.getBoundingClientRect();
     lastContainerSize = `${r.width}x${r.height}`;
   }
-  void captureContainer();
+  // Reuse a snapshot another glass on the same container already has.
+  if (!store.snapshot) void captureContainer(false);
   rafId = requestAnimationFrame(render);
 
   return api;

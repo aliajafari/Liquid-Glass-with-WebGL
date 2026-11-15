@@ -1,6 +1,6 @@
 {
   "name": "react-webgl-liquid-glass",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "React components for a WebGL2 liquid glass effect (blur, lens distortion, chromatic aberration, frost) with a CSS fallback.",
   "keywords": [
     "react",
@@ -53,7 +53,8 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "tsup",

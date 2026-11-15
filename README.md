@@ -1,18 +1,56 @@
+<div align="center">
+
 # 🪟 Liquid Glass
 
-A lightweight, modular library for **liquid glass** effects on HTML elements. The page background is captured with `html2canvas`, the region under the glass is cropped, and **WebGL2** processes it with GLSL shaders — blur, lens distortion, zoom, chromatic aberration, frost, and a CSS fallback when GPU capture is unavailable.
+**Real liquid glass for the web, rendered with WebGL2 shaders.** Blur, lens distortion, zoom, chromatic aberration, frost and edge light, with real HTML inside the glass. Ships as React components and as a tiny vanilla JS module.
 
-![Liquid Glass effect demo](assets/glass.gif)
+[![npm version](https://img.shields.io/npm/v/react-webgl-liquid-glass?color=7c5cff&label=npm)](https://www.npmjs.com/package/react-webgl-liquid-glass)
+[![npm downloads](https://img.shields.io/npm/dm/react-webgl-liquid-glass?color=7c5cff)](https://www.npmjs.com/package/react-webgl-liquid-glass)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/react-webgl-liquid-glass?label=minzipped)](https://bundlephobia.com/package/react-webgl-liquid-glass)
+[![types](https://img.shields.io/npm/types/react-webgl-liquid-glass)](packages/react-liquid-glass)
+[![license](https://img.shields.io/github/license/aliajafari/Liquid-Glass-with-WebGL)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/aliajafari/Liquid-Glass-with-WebGL?style=social)](https://github.com/aliajafari/Liquid-Glass-with-WebGL)
+
+<a href="https://aliajafari.github.io/Liquid-Glass-with-WebGL/react/">
+  <img src="assets/react-demo.gif" alt="A glass card being dragged over colorful tiles, refracting and blurring what is behind it" width="720" />
+</a>
+
+**[▶ Live React demo](https://aliajafari.github.io/Liquid-Glass-with-WebGL/react/)** · [Vanilla JS demo](https://aliajafari.github.io/Liquid-Glass-with-WebGL/) · [Open in StackBlitz](https://stackblitz.com/github/aliajafari/Liquid-Glass-with-WebGL/tree/main/examples/react-vite?file=src%2FApp.tsx) · [npm](https://www.npmjs.com/package/react-webgl-liquid-glass)
+
+</div>
+
+## 🚀 Quick start (React)
+
+```bash
+npm install react-webgl-liquid-glass
+```
+
+```tsx
+import { LiquidGlassContainer, GlassCard, GlassButton } from "react-webgl-liquid-glass";
+
+export function Hero() {
+  return (
+    <LiquidGlassContainer style={{ height: 480 }}>
+      <img src="/background.jpg" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+
+      <GlassCard blur={20} distortion={40} style={{ position: "absolute", top: 80, left: 80, width: 320 }}>
+        <h2>Hello, glass</h2>
+        <GlassButton>Click me</GlassButton>
+      </GlassCard>
+    </LiquidGlassContainer>
+  );
+}
+```
+
+`<GlassCard>`, `<GlassButton>` and `<LiquidGlass>` work with React 17, 18 and 19, are SSR-safe (Next.js, Remix, Astro) and fall back to CSS `backdrop-filter` when WebGL2 is unavailable. See the [package README](packages/react-liquid-glass/README.md) for every component and prop, or fork the [Vite example](examples/react-vite).
 
 ---
 
-## ✨ Introduction
+## ✨ Vanilla JS
+
+The original library is a lightweight, framework-free module. The page background is captured with `html2canvas`, the region under the glass is cropped, and **WebGL2** processes it with GLSL shaders, with a CSS fallback when GPU capture is unavailable.
 
 Use `createLiquidGlass()` to add a glass layer over your DOM: HTML inside `glass` renders normally, while the frosted/transparent background in that area is simulated via canvas and shaders.
-
-## Live Demo
-
-https://aliajafari.github.io/Liquid-Glass-with-WebGL/
 
 **How it works:**
 
@@ -39,27 +77,6 @@ https://aliajafari.github.io/Liquid-Glass-with-WebGL/
 
 ---
 
-## ⚛️ React package
-
-The effect is also available as React components on npm: [`react-webgl-liquid-glass`](packages/react-liquid-glass).
-
-```bash
-npm install react-webgl-liquid-glass
-```
-
-```tsx
-import { LiquidGlassContainer, GlassCard } from "react-webgl-liquid-glass";
-
-<LiquidGlassContainer>
-  <img src="/background.jpg" alt="" />
-  <GlassCard blur={20}>Hello</GlassCard>
-</LiquidGlassContainer>
-```
-
-See the [package README](packages/react-liquid-glass/README.md) for all components and props.
-
----
-
 ## 🌐 Demo
 
 Run locally from the project root:
@@ -70,7 +87,7 @@ python3 -m http.server 5173
 
 Then open:
 
-**http://localhost:5173/demo/index.html**
+**http://localhost:5173/docs/index.html**
 
 Shaders are loaded with `fetch`, so a local server is required — see [Local files](#local-files) under [Limitations](#limitations).
 
@@ -79,8 +96,9 @@ Shaders are loaded with `fetch`, so a local server is required — see [Local fi
 ## 📁 Project structure
 
 ```
-glass-effect/
-├── docs/                    # 🖥️  Sample page and styles
+Liquid-Glass-with-WebGL/
+├── assets/                  # 🎞️  README media
+├── docs/                    # 🖥️  Vanilla demo page (deployed to GitHub Pages)
 │   ├── index.html
 │   └── styles.css
 ├── src/
@@ -92,6 +110,10 @@ glass-effect/
 │       ├── config.js        # 🔧  Maps UI values (0–100) to shader uniforms
 │       ├── dom-capture.js   # 📸  html2canvas wrapper
 │       └── performance.js   # 📊  FPS and frame-time monitor
+├── packages/
+│   └── react-liquid-glass/  # ⚛️  React package (npm: react-webgl-liquid-glass)
+├── examples/
+│   └── react-vite/          # 🧪  Standalone Vite + React example (StackBlitz)
 └── LICENSE
 ```
 

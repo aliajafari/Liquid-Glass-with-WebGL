@@ -1,0 +1,36 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; color-scheme: dark; background: #0b1020; color: #e5e7eb; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+.page { max-width: 960px; margin: 0 auto; padding-block: 24px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header h1 { margin: 0 0 4px; font-size: 28px; }
+header p { margin: 0 0 20px; color: #9ca3af; }
+
+.stage { height: 540px; overflow: hidden; border-radius: 28px; background: #111827; touch-action: none; user-select: none; }
+.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.big-text { position: absolute; top: 40px; left: 50%; transform: translateX(-50%); font-size: clamp(36px, 9vw, 84px); font-weight: 900; color: rgba(255,255,255,.35); white-space: nowrap; letter-spacing: -1px; }
+.tiles { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 20px; }
+.tile { width: 26%; max-width: 200px; height: 160px; border-radius: 20px; display: grid; place-items: center; font-size: 26px; font-weight: 800; color: #fff; background: linear-gradient(135deg, #f43f5e, #f97316); }
+.tile:nth-child(2) { background: linear-gradient(135deg, #22c55e, #06b6d4); }
+.tile:nth-child(3) { background: linear-gradient(135deg, #6366f1, #a855f7); }
+
+.drag-card { position: absolute; width: 300px; cursor: grab; }
+.drag-card:active { cursor: grabbing; }
+.drag-card h2 { margin: 0 0 8px; font-size: 22px; }
+.drag-card p { margin: 0 0 16px; line-height: 1.45; }
+
+.dock { position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); display: flex; gap: 10px; }
+.orb { position: absolute; right: 36px; top: 36px; width: 120px; height: 120px; }
+
+.panel { margin-top: 20px; }
+.status { font-size: 14px; color: #9ca3af; margin-bottom: 14px; }
+.sliders { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px 20px; }
+.sliders label { display: grid; gap: 4px; font-size: 13px; }
+.sliders output { color: #fff; font-variant-numeric: tabular-nums; }
+.sliders input { width: 100%; }
+.sliders input:focus-visible, button:focus-visible { outline: 2px solid #93c5fd; outline-offset: 2px; }
+.code { margin-top: 18px; padding: 14px; border-radius: 12px; background: #111827; font-size: 13px; overflow-x: auto; }
+
+@media (max-width: 640px) {
+  .stage { height: 460px; }
+  .drag-card { width: 240px; }
+  .orb { width: 80px; height: 80px; right: 16px; top: 16px; }
+}

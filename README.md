@@ -15,7 +15,7 @@
   <img src="assets/react-demo.gif" alt="A page scrolling under a sticky glass navbar, glass cards and a fixed glass button" width="720" />
 </a>
 
-**[▶ Live React demo](https://aliajafari.github.io/Liquid-Glass-with-WebGL/react/)** · [Vanilla JS demo](https://aliajafari.github.io/Liquid-Glass-with-WebGL/) · [Open in StackBlitz](https://stackblitz.com/github/aliajafari/Liquid-Glass-with-WebGL/tree/main/examples/react-vite?file=src%2FApp.tsx) · [npm](https://www.npmjs.com/package/react-webgl-liquid-glass)
+**[▶ Live React demo](https://aliajafari.github.io/Liquid-Glass-with-WebGL/react/)** · [Vanilla JS demo](https://aliajafari.github.io/Liquid-Glass-with-WebGL/) · [Vanilla branch](https://github.com/aliajafari/Liquid-Glass-with-WebGL/tree/vanilla) · [Open in StackBlitz](https://stackblitz.com/github/aliajafari/Liquid-Glass-with-WebGL/tree/main/examples/react-vite?file=src%2FApp.tsx) · [npm](https://www.npmjs.com/package/react-webgl-liquid-glass)
 
 </div>
 
@@ -53,6 +53,14 @@ Place the components like any other element: in normal layout, `sticky` or `fixe
 ---
 
 ## ✨ Vanilla JS
+
+> **Just want the plain JavaScript version?** The [`vanilla` branch](https://github.com/aliajafari/Liquid-Glass-with-WebGL/tree/vanilla) holds only the framework-free code: ES modules, WebGL2 and GLSL, with no React, npm or build step.
+>
+> ```bash
+> git clone -b vanilla --single-branch https://github.com/aliajafari/Liquid-Glass-with-WebGL.git
+> ```
+>
+> The same files also live on `main` in [`src/`](src) and [`docs/`](docs).
 
 The original library is a lightweight, framework-free module. The page background is captured with `html2canvas`, the region under the glass is cropped, and **WebGL2** processes it with GLSL shaders, with a CSS fallback when GPU capture is unavailable.
 

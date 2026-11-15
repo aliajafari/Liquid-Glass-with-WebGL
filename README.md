@@ -1,4 +1,7 @@
-# 🪟 Liquid Glass
+# 🪟 Liquid Glass (vanilla JS)
+
+> This is the **`vanilla` branch**: the framework-free version, with plain ES modules, WebGL2 and GLSL, and no build step or React.
+> Looking for React components? See the [`main` branch](https://github.com/aliajafari/Liquid-Glass-with-WebGL) and the [`react-webgl-liquid-glass`](https://www.npmjs.com/package/react-webgl-liquid-glass) package on npm.
 
 A lightweight, modular library for **liquid glass** effects on HTML elements. The page background is captured with `html2canvas`, the region under the glass is cropped, and **WebGL2** processes it with GLSL shaders — blur, lens distortion, zoom, chromatic aberration, frost, and a CSS fallback when GPU capture is unavailable.
 
@@ -49,7 +52,7 @@ python3 -m http.server 5173
 
 Then open:
 
-**http://localhost:5173/demo/index.html**
+**http://localhost:5173/docs/index.html**
 
 Shaders are loaded with `fetch`, so a local server is required — see [Local files](#local-files) under [Limitations](#limitations).
 

@@ -57,6 +57,9 @@ jobs:
           scope: "@aliajafari"
 
       - name: Publish to GitHub Packages
-        run: npm publish --ignore-scripts
+        # GitHub Packages only accepts names scoped to the repository owner.
+        run: |
+          npm pkg set name=@aliajafari/react-liquid-glass
+          npm publish --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

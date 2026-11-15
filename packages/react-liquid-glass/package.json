@@ -1,5 +1,5 @@
 {
-  "name": "@aliajafari/react-liquid-glass",
+  "name": "react-webgl-liquid-glass",
   "version": "0.1.0",
   "description": "React components for a WebGL2 liquid glass effect (blur, lens distortion, chromatic aberration, frost) with a CSS fallback.",
   "keywords": [

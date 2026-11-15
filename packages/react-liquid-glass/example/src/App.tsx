@@ -8,7 +8,7 @@ import {
   type LiquidGlassEffect,
   type LiquidGlassMode,
   type LiquidGlassStats
-} from "@aliajafari/react-liquid-glass";
+} from "react-webgl-liquid-glass";
 
 type EffectKey = keyof typeof DEFAULT_EFFECT;
 

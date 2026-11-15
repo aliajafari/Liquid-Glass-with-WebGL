@@ -41,14 +41,14 @@ https://aliajafari.github.io/Liquid-Glass-with-WebGL/
 
 ## ⚛️ React package
 
-The effect is also available as React components on npm: [`@aliajafari/react-liquid-glass`](packages/react-liquid-glass).
+The effect is also available as React components on npm: [`react-webgl-liquid-glass`](packages/react-liquid-glass).
 
 ```bash
-npm install @aliajafari/react-liquid-glass
+npm install react-webgl-liquid-glass
 ```
 
 ```tsx
-import { LiquidGlassContainer, GlassCard } from "@aliajafari/react-liquid-glass";
+import { LiquidGlassContainer, GlassCard } from "react-webgl-liquid-glass";
 
 <LiquidGlassContainer>
   <img src="/background.jpg" alt="" />

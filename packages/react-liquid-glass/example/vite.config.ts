@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@aliajafari/react-liquid-glass": fileURLToPath(new URL("../src/index.ts", import.meta.url))
+      "react-webgl-liquid-glass": fileURLToPath(new URL("../src/index.ts", import.meta.url))
     }
   }
 });

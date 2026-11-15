@@ -1,4 +1,4 @@
-# @aliajafari/react-liquid-glass
+# react-webgl-liquid-glass
 
 React components for a **liquid glass** effect rendered with WebGL2: background blur, lens distortion, zoom, chromatic aberration, frost and edge lighting. When WebGL2 is not available, it falls back to CSS `backdrop-filter` automatically.
 
@@ -12,17 +12,17 @@ React components for a **liquid glass** effect rendered with WebGL2: background 
 ## Install
 
 ```bash
-npm install @aliajafari/react-liquid-glass
+npm install react-webgl-liquid-glass
 # or
-pnpm add @aliajafari/react-liquid-glass
-yarn add @aliajafari/react-liquid-glass
-bun add @aliajafari/react-liquid-glass
+pnpm add react-webgl-liquid-glass
+yarn add react-webgl-liquid-glass
+bun add react-webgl-liquid-glass
 ```
 
 ## Quick start
 
 ```tsx
-import { LiquidGlassContainer, GlassCard, GlassButton } from "@aliajafari/react-liquid-glass";
+import { LiquidGlassContainer, GlassCard, GlassButton } from "react-webgl-liquid-glass";
 
 export function Hero() {
   return (
@@ -107,7 +107,7 @@ Add `data-liquid-glass-ignore` to any element (an overlay, a tooltip) that shoul
 ## Build your own glass component
 
 ```tsx
-import { useLiquidGlass } from "@aliajafari/react-liquid-glass";
+import { useLiquidGlass } from "react-webgl-liquid-glass";
 
 function GlassAvatar({ src }: { src: string }) {
   const { glassRef, canvasRef, mode } = useLiquidGlass({ radius: 100, zoom: 70 });
@@ -122,10 +122,10 @@ function GlassAvatar({ src }: { src: string }) {
 
 ## Without React
 
-The renderer is framework-agnostic and available from `@aliajafari/react-liquid-glass/core`:
+The renderer is framework-agnostic and available from `react-webgl-liquid-glass/core`:
 
 ```ts
-import { createLiquidGlassEngine } from "@aliajafari/react-liquid-glass/core";
+import { createLiquidGlassEngine } from "react-webgl-liquid-glass/core";
 
 const engine = createLiquidGlassEngine({
   container: document.querySelector("#container")!,

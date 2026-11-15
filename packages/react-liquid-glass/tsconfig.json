@@ -14,7 +14,7 @@
     "noEmit": true,
     "types": ["vitest/globals"],
     "paths": {
-      "@aliajafari/react-liquid-glass": ["./src/index.ts"]
+      "react-webgl-liquid-glass": ["./src/index.ts"]
     }
   },
   "include": ["src", "test", "example/src"]

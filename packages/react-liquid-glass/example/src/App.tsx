@@ -1,10 +1,9 @@
-import { useRef, useState, type PointerEvent } from "react";
+import { useState } from "react";
 import {
   DEFAULT_EFFECT,
   GlassButton,
   GlassCard,
   LiquidGlass,
-  LiquidGlassContainer,
   type LiquidGlassEffect,
   type LiquidGlassMode,
   type LiquidGlassStats
@@ -21,116 +20,137 @@ const SLIDERS: Array<[EffectKey, string]> = [
   ["frost", "Frost"],
   ["light", "Light"],
   ["edgeGlow", "Edge glow"],
-  ["edgeWidth", "Edge width"],
   ["tint", "Tint"]
+];
+
+const PLACEMENTS = [
+  {
+    title: "In normal layout",
+    body: "Drop a GlassCard into any div, grid or flex row. It refracts whatever the page draws behind it.",
+    code: `<div className="grid">\n  <GlassCard>…</GlassCard>\n</div>`
+  },
+  {
+    title: "Sticky",
+    body: "The navigation bar above is position: sticky. Scroll and watch the page slide under it.",
+    code: `<LiquidGlass as="nav"\n  style={{ position: "sticky", top: 16 }} />`
+  },
+  {
+    title: "Fixed",
+    body: "The round button in the corner is position: fixed. It keeps refracting the page as you scroll.",
+    code: `<GlassButton\n  style={{ position: "fixed", right: 24, bottom: 24 }} />`
+  }
 ];
 
 export function App() {
   const [effect, setEffect] = useState<Required<Omit<LiquidGlassEffect, "lightDirection">>>({
     ...DEFAULT_EFFECT,
-    blur: 15
+    radius: 100,
+    blur: 0,
+    zoom: 70,
+    distortion: 55,
+    chromaticAberration: 45
   });
-  const [pos, setPos] = useState({ x: 300, y: 150 });
   const [mode, setMode] = useState<LiquidGlassMode>("pending");
   const [reason, setReason] = useState<string>();
   const [stats, setStats] = useState<LiquidGlassStats>();
-  const [count, setCount] = useState(0);
-  const drag = useRef<{ dx: number; dy: number } | null>(null);
-
-  const onPointerDown = (e: PointerEvent<HTMLElement>) => {
-    if ((e.target as HTMLElement).closest("button")) return;
-    drag.current = { dx: e.clientX - pos.x, dy: e.clientY - pos.y };
-    e.currentTarget.setPointerCapture(e.pointerId);
-  };
-  const onPointerMove = (e: PointerEvent<HTMLElement>) => {
-    if (!drag.current) return;
-    setPos({ x: e.clientX - drag.current.dx, y: e.clientY - drag.current.dy });
-  };
-  const onPointerUp = () => {
-    drag.current = null;
-  };
 
   return (
-    <main className="page">
-      <header>
-        <h1>React Liquid Glass</h1>
-        <p>
-          WebGL2 glass components for React. Drag the card, press the buttons, move the sliders.
-        </p>
+    <>
+      <LiquidGlass
+        as="nav"
+        className="nav"
+        radius={100}
+        blur={35}
+        distortion={25}
+        zoom={10}
+        onModeChange={(m, r) => {
+          setMode(m);
+          setReason(r);
+        }}
+        onStats={setStats}
+        contentClassName="nav-inner"
+      >
+        <strong className="brand">Liquid Glass</strong>
+        <span className="nav-links">
+          <a href="#anywhere">Placement</a>
+          <a href="#playground">Playground</a>
+          <a href="https://www.npmjs.com/package/react-webgl-liquid-glass">npm</a>
+        </span>
+        <span className="nav-status">
+          {mode}
+          {reason ? ` (${reason})` : ""}
+          {stats ? ` · ${stats.fps} fps` : ""}
+        </span>
+      </LiquidGlass>
+
+      <header className="hero">
+        <img className="hero-bg" src="./background.jpg" alt="" />
+        <div className="hero-word" aria-hidden="true">
+          LIQUID GLASS
+        </div>
+        <GlassCard className="hero-card" blur={20}>
+          <h1>Glass components for React</h1>
+          <p>
+            WebGL2 refraction, blur and chromatic edges on real HTML. Place them like any other
+            element: no wrappers to position, no dragging.
+          </p>
+          <code className="install">npm i react-webgl-liquid-glass</code>
+        </GlassCard>
       </header>
 
-      <LiquidGlassContainer className="stage" defaults={{ targetFps: 60 }}>
-        <img className="bg" src="./background.jpg" alt="" />
-        <div className="big-text">LIQUID GLASS</div>
-        <div className="tiles">
-          <div className="tile">React</div>
-          <div className="tile">WebGL</div>
-          <div className="tile">Shader</div>
-        </div>
-
-        <GlassCard
-          className="drag-card"
-          style={{ left: pos.x, top: pos.y }}
-          {...effect}
-          onModeChange={(m, r) => {
-            setMode(m);
-            setReason(r);
-          }}
-          onStats={setStats}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-        >
-          <h2>Glass Card</h2>
-          <p>Real HTML inside a WebGL glass surface. Drag me around.</p>
-          <GlassButton onClick={() => setCount((c) => c + 1)}>Clicked {count}×</GlassButton>
-        </GlassCard>
-
-        <nav className="dock">
-          <GlassButton>Home</GlassButton>
-          <GlassButton>Gallery</GlassButton>
-          <GlassButton>About</GlassButton>
-        </nav>
-
-        <LiquidGlass className="orb" radius={100} blur={0} zoom={80} distortion={60} chromaticAberration={60} />
-      </LiquidGlassContainer>
-
-      <section className="panel">
-        <div className="status">
-          <strong>Mode:</strong> {mode}
-          {reason ? ` (${reason})` : ""}
-          {stats && (
-            <span>
-              {" "}
-              · {stats.fps} fps · frame {stats.frameTime.toFixed(1)} ms · snapshot {stats.snapshotTime.toFixed(0)} ms
-            </span>
-          )}
-        </div>
-        <div className="sliders">
-          {SLIDERS.map(([key, label]) => (
-            <label key={key}>
-              <span>
-                {label} <output>{effect[key]}</output>
-              </span>
-              <input
-                type="range"
-                min={0}
-                max={100}
-                value={effect[key]}
-                onChange={(e) => setEffect((prev) => ({ ...prev, [key]: Number(e.target.value) }))}
-              />
-            </label>
+      <section id="anywhere" className="stripes">
+        <h2>Put it anywhere</h2>
+        <div className="grid">
+          {PLACEMENTS.map((p) => (
+            <GlassCard key={p.title} blur={30} className="tile">
+              <h3>{p.title}</h3>
+              <p>{p.body}</p>
+              <pre>{p.code}</pre>
+            </GlassCard>
           ))}
         </div>
-        <pre className="code">{`<LiquidGlassContainer>
-  <img src="/background.jpg" />
-  <GlassCard ${SLIDERS.filter(([k]) => effect[k] !== DEFAULT_EFFECT[k])
-    .map(([k]) => `${k}={${effect[k]}}`)
-    .join(" ")}>
-    Hello
-  </GlassCard>
-</LiquidGlassContainer>`}</pre>
       </section>
-    </main>
+
+      <section id="playground" className="playground">
+        <img className="hero-bg" src="./background.jpg" alt="" />
+        <div className="playground-row">
+          <LiquidGlass className="lens" {...effect} />
+          <GlassCard className="controls" blur={40} tint={80}>
+            <h2>Playground</h2>
+            <div className="sliders">
+              {SLIDERS.map(([key, label]) => (
+                <label key={key} htmlFor={`slider-${key}`}>
+                  <span>
+                    {label} <output>{effect[key]}</output>
+                  </span>
+                  <input
+                    id={`slider-${key}`}
+                    type="range"
+                    min={0}
+                    max={100}
+                    value={effect[key]}
+                    onChange={(e) => setEffect((prev) => ({ ...prev, [key]: Number(e.target.value) }))}
+                  />
+                </label>
+              ))}
+            </div>
+          </GlassCard>
+        </div>
+      </section>
+
+      <footer className="footer">
+        <p>MIT licensed. Effect props are 0–100, like sliders.</p>
+      </footer>
+
+      <GlassButton
+        className="fab"
+        aria-label="Back to top"
+        radius={100}
+        zoom={40}
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      >
+        ↑
+      </GlassButton>
+    </>
   );
 }

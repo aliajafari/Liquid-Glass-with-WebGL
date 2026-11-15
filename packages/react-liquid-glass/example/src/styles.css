@@ -1,36 +1,52 @@
 * { box-sizing: border-box; }
-html, body { margin: 0; color-scheme: dark; background: #0b1020; color: #e5e7eb; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
-.page { max-width: 960px; margin: 0 auto; padding-block: 24px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-header h1 { margin: 0 0 4px; font-size: 28px; }
-header p { margin: 0 0 20px; color: #9ca3af; }
+html { color-scheme: dark; background: #0b1020; scroll-behavior: smooth; }
+body { margin: 0; background: #0b1020; color: #e5e7eb; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid #93c5fd; outline-offset: 2px; }
 
-.stage { height: 540px; overflow: hidden; border-radius: 28px; background: #111827; touch-action: none; user-select: none; }
-.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.big-text { position: absolute; top: 40px; left: 50%; transform: translateX(-50%); font-size: clamp(36px, 9vw, 84px); font-weight: 900; color: rgba(255,255,255,.35); white-space: nowrap; letter-spacing: -1px; }
-.tiles { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 20px; }
-.tile { width: 26%; max-width: 200px; height: 160px; border-radius: 20px; display: grid; place-items: center; font-size: 26px; font-weight: 800; color: #fff; background: linear-gradient(135deg, #f43f5e, #f97316); }
-.tile:nth-child(2) { background: linear-gradient(135deg, #22c55e, #06b6d4); }
-.tile:nth-child(3) { background: linear-gradient(135deg, #6366f1, #a855f7); }
+/* Sticky glass navigation */
+.nav { position: sticky; top: 16px; z-index: 10; width: min(960px, calc(100% - 32px)); margin: 16px auto 0; color: #fff; }
+.nav-inner { display: flex !important; align-items: center; gap: 20px; padding: 12px 22px; }
+.brand { font-size: 16px; }
+.nav-links { display: flex; gap: 16px; font-size: 14px; }
+.nav-links a { text-decoration: none; opacity: .9; }
+.nav-status { margin-left: auto; font-size: 12px; opacity: .75; font-variant-numeric: tabular-nums; }
 
-.drag-card { position: absolute; width: 300px; cursor: grab; }
-.drag-card:active { cursor: grabbing; }
-.drag-card h2 { margin: 0 0 8px; font-size: 22px; }
-.drag-card p { margin: 0 0 16px; line-height: 1.45; }
+/* Hero: glass card in normal flow */
+.hero { position: relative; min-height: 620px; margin-top: -76px; padding: 150px max(16px, env(safe-area-inset-right, 0px)) 80px max(16px, env(safe-area-inset-left, 0px)); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hero-word { position: absolute; top: 130px; left: 50%; transform: translateX(-50%); font-size: clamp(48px, 13vw, 150px); font-weight: 900; color: rgba(255,255,255,.35); white-space: nowrap; letter-spacing: -2px; }
+.hero-card { max-width: 520px; margin-top: 120px; }
+.hero-card h1 { margin: 0 0 10px; font-size: clamp(26px, 4vw, 36px); line-height: 1.15; }
+.hero-card p { margin: 0 0 16px; line-height: 1.5; }
+.install { display: inline-block; padding: 8px 12px; border-radius: 10px; background: rgba(0,0,0,.35); font-size: 14px; }
 
-.dock { position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); display: flex; gap: 10px; }
-.orb { position: absolute; right: 36px; top: 36px; width: 120px; height: 120px; }
+/* Grid of glass cards over a busy background */
+.stripes { padding: 72px max(16px, env(safe-area-inset-right, 0px)) 72px max(16px, env(safe-area-inset-left, 0px));
+  background:
+    radial-gradient(circle at 15% 30%, #f43f5e 0 120px, transparent 121px),
+    radial-gradient(circle at 80% 25%, #22c55e 0 150px, transparent 151px),
+    radial-gradient(circle at 55% 85%, #6366f1 0 170px, transparent 171px),
+    linear-gradient(135deg, #1e293b 25%, #0f172a 25%, #0f172a 50%, #1e293b 50%, #1e293b 75%, #0f172a 75%) 0 0 / 56px 56px; }
+.stripes h2, .playground h2 { margin: 0 auto 24px; max-width: 960px; font-size: 28px; color: #fff; }
+.grid { max-width: 960px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+.tile h3 { margin: 0 0 8px; font-size: 20px; }
+.tile p { margin: 0 0 14px; line-height: 1.5; }
+.tile pre { margin: 0; padding: 10px; border-radius: 10px; background: rgba(0,0,0,.4); font-size: 12px; overflow-x: auto; }
 
-.panel { margin-top: 20px; }
-.status { font-size: 14px; color: #9ca3af; margin-bottom: 14px; }
-.sliders { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px 20px; }
+/* Playground */
+.playground { position: relative; overflow: hidden; padding: 72px max(16px, env(safe-area-inset-right, 0px)) 72px max(16px, env(safe-area-inset-left, 0px)); }
+.playground-row { position: relative; max-width: 960px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 32px; align-items: center; justify-content: center; }
+.lens { width: 240px; height: 240px; flex: none; }
+.controls { flex: 1 1 360px; min-width: 0; }
+.controls h2 { margin: 0 0 16px; }
+.sliders { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px 18px; }
 .sliders label { display: grid; gap: 4px; font-size: 13px; }
-.sliders output { color: #fff; font-variant-numeric: tabular-nums; }
+.sliders output { font-variant-numeric: tabular-nums; }
 .sliders input { width: 100%; }
-.sliders input:focus-visible, button:focus-visible { outline: 2px solid #93c5fd; outline-offset: 2px; }
-.code { margin-top: 18px; padding: 14px; border-radius: 12px; background: #111827; font-size: 13px; overflow-x: auto; }
 
-@media (max-width: 640px) {
-  .stage { height: 460px; }
-  .drag-card { width: 240px; }
-  .orb { width: 80px; height: 80px; right: 16px; top: 16px; }
-}
+.footer { padding: 40px 16px 120px; text-align: center; color: #9ca3af; font-size: 14px; }
+
+/* Fixed glass button */
+.fab { position: fixed !important; right: max(24px, env(safe-area-inset-right, 0px)); bottom: max(24px, env(safe-area-inset-bottom, 0px)); width: 56px; height: 56px; padding: 0 !important; font-size: 22px !important; z-index: 10; }
+.fab > span:last-child { justify-content: center; width: 100%; height: 100%; }

@@ -12,7 +12,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/aliajafari/Liquid-Glass-with-WebGL?style=social)](https://github.com/aliajafari/Liquid-Glass-with-WebGL)
 
 <a href="https://aliajafari.github.io/Liquid-Glass-with-WebGL/react/">
-  <img src="assets/react-demo.gif" alt="A glass card being dragged over colorful tiles, refracting and blurring what is behind it" width="720" />
+  <img src="assets/react-demo.gif" alt="A page scrolling under a sticky glass navbar, glass cards and a fixed glass button" width="720" />
 </a>
 
 **[▶ Live React demo](https://aliajafari.github.io/Liquid-Glass-with-WebGL/react/)** · [Vanilla JS demo](https://aliajafari.github.io/Liquid-Glass-with-WebGL/) · [Open in StackBlitz](https://stackblitz.com/github/aliajafari/Liquid-Glass-with-WebGL/tree/main/examples/react-vite?file=src%2FApp.tsx) · [npm](https://www.npmjs.com/package/react-webgl-liquid-glass)
@@ -26,21 +26,27 @@ npm install react-webgl-liquid-glass
 ```
 
 ```tsx
-import { LiquidGlassContainer, GlassCard, GlassButton } from "react-webgl-liquid-glass";
+import { GlassCard, GlassButton, LiquidGlass } from "react-webgl-liquid-glass";
 
-export function Hero() {
+export function Page() {
   return (
-    <LiquidGlassContainer style={{ height: 480 }}>
-      <img src="/background.jpg" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+    <>
+      <LiquidGlass as="nav" radius={100} style={{ position: "sticky", top: 16 }}>…</LiquidGlass>
 
-      <GlassCard blur={20} distortion={40} style={{ position: "absolute", top: 80, left: 80, width: 320 }}>
-        <h2>Hello, glass</h2>
-        <GlassButton>Click me</GlassButton>
-      </GlassCard>
-    </LiquidGlassContainer>
+      <section className="hero">
+        <GlassCard blur={20}>
+          <h2>Hello, glass</h2>
+          <GlassButton>Click me</GlassButton>
+        </GlassCard>
+      </section>
+
+      <GlassButton style={{ position: "fixed", right: 24, bottom: 24 }}>↑</GlassButton>
+    </>
   );
 }
 ```
+
+Place the components like any other element: in normal layout, `sticky` or `fixed`. The glass refracts the page behind it and follows it as you scroll.
 
 `<GlassCard>`, `<GlassButton>` and `<LiquidGlass>` work with React 17, 18 and 19, are SSR-safe (Next.js, Remix, Astro) and fall back to CSS `backdrop-filter` when WebGL2 is unavailable. See the [package README](packages/react-liquid-glass/README.md) for every component and prop, or fork the [Vite example](examples/react-vite).
 

@@ -12,7 +12,10 @@
     "skipLibCheck": true,
     "declaration": true,
     "noEmit": true,
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals"],
+    "paths": {
+      "@aliajafari/react-liquid-glass": ["./src/index.ts"]
+    }
   },
   "include": ["src", "test", "example/src"]
 }

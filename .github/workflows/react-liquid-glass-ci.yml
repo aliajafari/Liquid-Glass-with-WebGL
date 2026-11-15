@@ -1,0 +1,29 @@
+name: react-liquid-glass CI
+
+on:
+  pull_request:
+    paths: ["packages/react-liquid-glass/**", ".github/workflows/react-liquid-glass-*.yml"]
+  push:
+    branches: [main]
+    paths: ["packages/react-liquid-glass/**"]
+
+defaults:
+  run:
+    working-directory: packages/react-liquid-glass
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: packages/react-liquid-glass/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npm run build:example
+      - run: npm pack --dry-run

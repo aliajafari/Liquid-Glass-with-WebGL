@@ -4,7 +4,7 @@ React components for a **liquid glass** effect rendered with WebGL2: background 
 
 ![Liquid Glass effect demo](https://raw.githubusercontent.com/aliajafari/Liquid-Glass-with-WebGL/main/assets/react-demo.gif)
 
-**[Live demo](https://aliajafari.github.io/Liquid-Glass-with-WebGL/react/)** · [Open in StackBlitz](https://stackblitz.com/github/aliajafari/Liquid-Glass-with-WebGL/tree/main/examples/react-vite?file=src%2FApp.tsx)
+**[Live demo](https://aliajafari.github.io/Liquid-Glass-with-WebGL/)** · [Open in StackBlitz](https://stackblitz.com/github/aliajafari/Liquid-Glass-with-WebGL/tree/main/examples/react-vite?file=src%2FApp.tsx)
 
 - Real HTML inside the glass. Children render on top as normal DOM.
 - TypeScript types, ESM and CommonJS builds, tree-shakeable.

@@ -31,9 +31,11 @@ jobs:
           npm run build:example
       - name: Assemble site
         run: |
-          mkdir -p _site
-          cp -r docs/. _site/
-          cp -r packages/react-liquid-glass/example/dist _site/react
+          mkdir -p _site/vanilla _site/react
+          cp -r packages/react-liquid-glass/example/dist/. _site/
+          cp -r docs/. _site/vanilla/
+          # Old /react/ links redirect to the React demo, now at the site root.
+          printf '%s\n' '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=../"><link rel="canonical" href="../"><title>Redirecting</title><a href="../">Liquid Glass demo</a>' > _site/react/index.html
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

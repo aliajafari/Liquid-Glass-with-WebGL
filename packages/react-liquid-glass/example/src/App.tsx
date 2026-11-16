@@ -208,7 +208,7 @@ export function App() {
         <p className="footer-links">
           <a href={REPO}>GitHub</a>
           <a href={NPM}>npm</a>
-          <a href="../">Vanilla JS demo</a>
+          <a href="./vanilla/">Vanilla JS demo</a>
         </p>
       </footer>
     </>

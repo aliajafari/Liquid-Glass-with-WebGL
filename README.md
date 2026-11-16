@@ -11,11 +11,11 @@
 [![license](https://img.shields.io/github/license/aliajafari/Liquid-Glass-with-WebGL)](LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/aliajafari/Liquid-Glass-with-WebGL?style=social)](https://github.com/aliajafari/Liquid-Glass-with-WebGL)
 
-<a href="https://aliajafari.github.io/Liquid-Glass-with-WebGL/react/">
+<a href="https://aliajafari.github.io/Liquid-Glass-with-WebGL/">
   <img src="assets/react-demo.gif" alt="A dark page scrolling under a sticky glass menu, with glass cards refracting a bright horizon line" width="720" />
 </a>
 
-**[▶ Live React demo](https://aliajafari.github.io/Liquid-Glass-with-WebGL/react/)** · [Vanilla JS demo](https://aliajafari.github.io/Liquid-Glass-with-WebGL/) · [Vanilla branch](https://github.com/aliajafari/Liquid-Glass-with-WebGL/tree/vanilla) · [Open in StackBlitz](https://stackblitz.com/github/aliajafari/Liquid-Glass-with-WebGL/tree/main/examples/react-vite?file=src%2FApp.tsx) · [npm](https://www.npmjs.com/package/react-webgl-liquid-glass)
+**[▶ Live React demo](https://aliajafari.github.io/Liquid-Glass-with-WebGL/)** · [Vanilla JS demo](https://aliajafari.github.io/Liquid-Glass-with-WebGL/vanilla/) · [Vanilla branch](https://github.com/aliajafari/Liquid-Glass-with-WebGL/tree/vanilla) · [Open in StackBlitz](https://stackblitz.com/github/aliajafari/Liquid-Glass-with-WebGL/tree/main/examples/react-vite?file=src%2FApp.tsx) · [npm](https://www.npmjs.com/package/react-webgl-liquid-glass)
 
 </div>
 
